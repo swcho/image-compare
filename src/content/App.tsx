@@ -2,8 +2,9 @@ import { useImageStore } from '../store/imageStore';
 import { useKeyboard } from '../hooks/useKeyboard';
 import { Carousel } from '../components/Carousel/Carousel';
 import { Comparator } from '../components/Comparator/Comparator';
+import { I18nProvider } from '../i18n';
 
-export default function App() {
+function AppContent() {
   useKeyboard();
 
   const isOpen = useImageStore((s) => s.isOpen);
@@ -17,5 +18,13 @@ export default function App() {
       {viewMode === 'carousel' && <Carousel />}
       {viewMode === 'compare' && <Comparator />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   );
 }

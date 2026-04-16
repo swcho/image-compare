@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useImageStore } from '../../store/imageStore';
 import { computeMetrics, computeDiffHeatmap } from '../../utils/imageMetrics';
 import { MetricsPanel } from './MetricsPanel';
+import { useTranslation } from '../../i18n';
 import type { ImageMetrics } from '../../types';
 
 type HeatmapState = 'idle' | 'loading' | 'ready';
@@ -10,6 +11,7 @@ export function Comparator() {
   const images = useImageStore((s) => s.images);
   const selectedIndices = useImageStore((s) => s.selectedIndices);
   const { backToCarousel, close } = useImageStore();
+  const { t } = useTranslation();
 
   const [metrics, setMetrics] = useState<ImageMetrics | null>(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
@@ -36,7 +38,7 @@ export function Comparator() {
     computeMetrics(imgA.src, imgB.src)
       .then(setMetrics)
       .catch((err: unknown) => {
-        setMetricsError(err instanceof Error ? err.message : '지표 계산 실패');
+        setMetricsError(err instanceof Error ? err.message : t.comparator.metricsError);
       })
       .finally(() => setMetricsLoading(false));
   }, [imgA?.src, imgB?.src]);
@@ -78,13 +80,13 @@ export function Comparator() {
             onClick={backToCarousel}
             className="text-sm text-gray-400 hover:text-gray-200 transition-colors flex items-center gap-1"
           >
-            ‹ 캐로샐로
+            {t.comparator.backToCarousel}
           </button>
-          <span className="text-sm text-gray-300 font-medium">이미지 비교</span>
+          <span className="text-sm text-gray-300 font-medium">{t.comparator.title}</span>
           <button
             onClick={close}
             className="text-gray-500 hover:text-gray-200 transition-colors text-lg leading-none"
-            aria-label="닫기"
+            aria-label={t.comparator.close}
           >
             ✕
           </button>
@@ -99,7 +101,7 @@ export function Comparator() {
         {/* Diff heatmap (shown below images when active) */}
         {showHeatmap && heatmapUrl && (
           <div className="flex flex-col items-center bg-[#0e0e1a] py-3 border-t border-gray-800">
-            <p className="text-xs text-gray-500 mb-2">차이 히트맵 (파랑=유사 / 빨강=차이)</p>
+            <p className="text-xs text-gray-500 mb-2">{t.comparator.heatmapTitle}</p>
             <img
               src={heatmapUrl}
               alt="Difference heatmap"
@@ -111,7 +113,7 @@ export function Comparator() {
 
         {/* Metrics panel */}
         {metricsLoading && (
-          <div className="py-6 text-center text-xs text-gray-500">지표 계산 중…</div>
+          <div className="py-6 text-center text-xs text-gray-500">{t.comparator.metricsLoading}</div>
         )}
         {metricsError && (
           <div className="py-4 text-center text-xs text-red-400">{metricsError}</div>
@@ -127,10 +129,10 @@ export function Comparator() {
                        hover:border-gray-300 hover:text-gray-200 disabled:opacity-40 transition-colors"
           >
             {heatmapState === 'loading'
-              ? '계산 중…'
+              ? t.comparator.calculating
               : showHeatmap
-                ? '히트맵 숨기기'
-                : '차이 히트맵 보기'}
+                ? t.comparator.hideHeatmap
+                : t.comparator.showDiffHeatmap}
           </button>
         </div>
       </div>

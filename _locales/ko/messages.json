@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "GitHub 이미지 비교"
+  },
+  "extensionDescription": {
+    "message": "GitHub 이슈/PR 이미지 캐로샐 & 유사도 비교 도구"
+  }
+}

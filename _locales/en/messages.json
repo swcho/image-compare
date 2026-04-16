@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "GitHub Image Compare"
+  },
+  "extensionDescription": {
+    "message": "Image carousel & similarity compare tool for GitHub issues/PRs"
+  }
+}

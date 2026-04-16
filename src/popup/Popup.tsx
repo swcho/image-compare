@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { Settings } from '../types';
+import { I18nProvider, useTranslation, type Locale } from '../i18n';
 
 const DEFAULT_SETTINGS: Settings = { domain: '', enabled: true };
 
-export default function Popup() {
+function PopupContent() {
+  const { t, locale, setLocale } = useTranslation();
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [saved, setSaved] = useState(false);
 
@@ -34,7 +36,7 @@ export default function Popup() {
 
       {/* Enable toggle */}
       <label className="flex items-center justify-between cursor-pointer">
-        <span className="text-sm text-gray-300">확장 활성화</span>
+        <span className="text-sm text-gray-300">{t.popup.enableExtension}</span>
         <button
           onClick={() => setSettings((s) => ({ ...s, enabled: !s.enabled }))}
           className={`relative w-10 h-5 rounded-full transition-colors ${
@@ -51,7 +53,7 @@ export default function Popup() {
 
       {/* Domain input */}
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-gray-400">GitHub Enterprise 도메인</label>
+        <label className="text-xs text-gray-400">{t.popup.enterpriseDomain}</label>
         <input
           type="text"
           value={settings.domain}
@@ -60,9 +62,27 @@ export default function Popup() {
           className="bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-sm text-gray-100
                      focus:outline-none focus:border-blue-500 placeholder:text-gray-600"
         />
-        <p className="text-xs text-gray-500">
-          비워두면 모든 /issues/* 및 /pull/* 페이지에서 동작합니다.
-        </p>
+        <p className="text-xs text-gray-500">{t.popup.domainHint}</p>
+      </div>
+
+      {/* Language selector */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs text-gray-400">{t.popup.language}</span>
+        <div className="flex rounded overflow-hidden border border-gray-700 text-xs">
+          {(['en', 'ko'] as Locale[]).map((l) => (
+            <button
+              key={l}
+              onClick={() => setLocale(l)}
+              className={`px-2.5 py-1 transition-colors ${
+                locale === l
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              {l === 'en' ? 'EN' : '한국어'}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Save button */}
@@ -70,13 +90,19 @@ export default function Popup() {
         onClick={save}
         className="mt-auto bg-blue-600 hover:bg-blue-500 text-white text-sm py-1.5 rounded transition-colors"
       >
-        {saved ? '저장됨 ✓' : '저장'}
+        {saved ? t.popup.saved : t.popup.save}
       </button>
 
       {/* Footer */}
-      <p className="text-center text-xs text-gray-600">
-        이슈/PR 페이지의 이미지를 클릭해서 시작하세요
-      </p>
+      <p className="text-center text-xs text-gray-600">{t.popup.footer}</p>
     </div>
+  );
+}
+
+export default function Popup() {
+  return (
+    <I18nProvider>
+      <PopupContent />
+    </I18nProvider>
   );
 }

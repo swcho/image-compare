@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useImageStore } from '../../store/imageStore';
+import { useTranslation } from '../../i18n';
 
 export function Carousel() {
   const images = useImageStore((s) => s.images);
@@ -8,6 +9,7 @@ export function Carousel() {
   const selectedIndices = useImageStore((s) => s.selectedIndices);
   const { close, goTo, next, prev, toggleCompareMode, selectForCompare, startCompare } =
     useImageStore();
+  const { t } = useTranslation();
 
   const thumbRef = useRef<HTMLDivElement>(null);
   const current = images[currentIndex];
@@ -61,20 +63,20 @@ export function Carousel() {
                   : 'border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200'
               }`}
             >
-              비교 모드
+              {t.carousel.compareMode}
             </button>
             {canCompare && (
               <button
                 onClick={startCompare}
                 className="text-xs px-3 py-1 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
               >
-                비교하기 →
+                {t.carousel.compare}
               </button>
             )}
             <button
               onClick={close}
               className="text-gray-500 hover:text-gray-200 transition-colors ml-1 text-lg leading-none"
-              aria-label="닫기"
+              aria-label={t.carousel.close}
             >
               ✕
             </button>
@@ -113,7 +115,7 @@ export function Carousel() {
                       isSelected ? 'opacity-100' : 'opacity-0 hover:opacity-100'
                     }`}
                   >
-                    {isSelected ? `#${selectedIndices.indexOf(i) + 1}` : '선택'}
+                    {isSelected ? `#${selectedIndices.indexOf(i) + 1}` : t.carousel.select}
                   </div>
                 )}
               </button>
@@ -130,7 +132,7 @@ export function Carousel() {
             className="absolute left-3 z-10 w-9 h-9 flex items-center justify-center
                        rounded-full bg-black/50 text-white hover:bg-black/80
                        disabled:opacity-20 transition-colors text-lg"
-            aria-label="이전"
+            aria-label={t.carousel.prev}
           >
             ‹
           </button>
@@ -150,7 +152,7 @@ export function Carousel() {
             className="absolute right-3 z-10 w-9 h-9 flex items-center justify-center
                        rounded-full bg-black/50 text-white hover:bg-black/80
                        disabled:opacity-20 transition-colors text-lg"
-            aria-label="다음"
+            aria-label={t.carousel.next}
           >
             ›
           </button>
@@ -158,11 +160,9 @@ export function Carousel() {
 
         {/* Footer */}
         <div className="px-4 py-2 text-center text-xs text-gray-600 border-t border-gray-800">
-          ← → 키로 탐색 &nbsp;·&nbsp; ESC 로 닫기
+          {t.carousel.keyboardHint}
           {compareMode && (
-            <span className="ml-2 text-emerald-600">
-              · 비교할 이미지 2개를 썸네일에서 선택하세요
-            </span>
+            <span className="ml-2 text-emerald-600">{t.carousel.selectTwoImages}</span>
           )}
         </div>
       </div>
