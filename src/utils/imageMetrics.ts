@@ -8,9 +8,19 @@ const PHASH_INPUT_SIZE = 32;
 // ---------------------------------------------------------------------------
 
 async function fetchToBlob(url: string): Promise<Blob> {
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Failed to fetch image: ${url}`);
-  return resp.blob();
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ type: 'fetchImage', url }, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+        return;
+      }
+      if (!response.ok) {
+        reject(new Error(`Failed to fetch image: ${response.error}`));
+        return;
+      }
+      resolve(new Blob([new Uint8Array(response.data as number[])], { type: response.mimeType as string }));
+    });
+  });
 }
 
 async function blobToImageData(blob: Blob, width: number, height: number): Promise<ImageData> {

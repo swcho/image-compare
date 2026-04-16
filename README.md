@@ -178,3 +178,17 @@ src/
 ## License
 
 MIT
+
+---
+
+## Privacy Policy
+
+**GitHub Image Compare** does not collect, store, transmit, or share any personal data.
+
+- **No data collection** — the extension does not gather any user information, browsing history, or personally identifiable data.
+- **Local processing only** — all image comparison and metric computation runs entirely in your browser using the Canvas API. No image data or pixel values are sent to any external server.
+- **Storage** — the only data stored is your extension preferences (enabled/disabled state and optional GitHub Enterprise domain), saved locally via `chrome.storage.sync`. This setting data is never transmitted to third parties.
+- **Host permissions** — broad host permissions (`*://*/*`) are requested solely to allow the background service worker to fetch image data from GitHub and external CDN URLs for in-browser comparison. No data fetched is stored or forwarded anywhere.
+- **No third-party services** — the extension does not integrate with any analytics, advertising, or tracking services.
+
+If you have questions about this policy, please open an issue in this repository.
