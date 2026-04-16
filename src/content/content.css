@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Scrollbar styling for thumbnail strip */
+.thumb-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.thumb-strip::-webkit-scrollbar-track {
+  background: #1e1e2e;
+}
+.thumb-strip::-webkit-scrollbar-thumb {
+  background: #4a4a6a;
+  border-radius: 2px;
+}
+
+/* Make images inside the overlay not interfere with host page */
+#gh-img-compare-panel * {
+  box-sizing: border-box;
+}
