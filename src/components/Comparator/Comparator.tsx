@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useImageStore } from '../../store/imageStore';
 import { computeMetrics, computeDiffHeatmap } from '../../utils/imageMetrics';
 import { MetricsPanel } from './MetricsPanel';
+import { ExifPanel } from '../Common/ExifPanel';
 import { useTranslation } from '../../i18n';
 import type { ImageMetrics } from '../../types';
 
@@ -150,20 +151,36 @@ interface ImagePaneProps {
 }
 
 function ImagePane({ label, img }: ImagePaneProps) {
+  const [showExif, setShowExif] = useState(false);
+  const { t } = useTranslation();
+
   return (
-    <div className="flex flex-col items-center gap-2 p-4 min-h-[260px]">
-      <div className="flex items-center gap-2 self-start">
-        <span className="text-xs font-bold bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded">
-          {label}
-        </span>
-        <span className="text-xs text-gray-500 truncate max-w-[180px]">{img.filename}</span>
+    <div className="flex flex-col items-stretch gap-2 p-4 min-h-[260px]">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xs font-bold bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded">
+            {label}
+          </span>
+          <span className="text-xs text-gray-500 truncate">{img.filename}</span>
+        </div>
+        <button
+          onClick={() => setShowExif((v) => !v)}
+          className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors flex-shrink-0 ${
+            showExif
+              ? 'border-blue-500 text-blue-400'
+              : 'border-gray-700 text-gray-500 hover:border-gray-500 hover:text-gray-300'
+          }`}
+        >
+          {showExif ? t.exif.toggleHide : t.exif.toggleShow}
+        </button>
       </div>
       <img
         src={img.src}
         alt={img.alt}
-        className="max-h-[300px] max-w-full object-contain flex-1"
+        className="max-h-[300px] max-w-full object-contain flex-1 self-center"
         draggable={false}
       />
+      {showExif && <ExifPanel src={img.src} compact />}
     </div>
   );
 }

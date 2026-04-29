@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import contentStyles from './content.css?inline';
+import psvStyles from '@photo-sphere-viewer/core/index.css?inline';
 import { ImageDetector } from './ImageDetector';
 
 function mount() {
@@ -15,9 +16,9 @@ function mount() {
   // Shadow DOM for full CSS isolation
   const shadow = host.attachShadow({ mode: 'open' });
 
-  // Inject Tailwind styles
+  // Inject Tailwind + Photo Sphere Viewer styles into the shadow root.
   const style = document.createElement('style');
-  style.textContent = contentStyles;
+  style.textContent = `${contentStyles}\n${psvStyles}`;
   shadow.appendChild(style);
 
   // Mount point — the App itself sets pointer-events:auto on the overlay

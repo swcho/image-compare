@@ -1,4 +1,5 @@
 import type { ImageMetrics } from '../types';
+import { fetchToBlob } from './fetchImage';
 
 const TARGET_SIZE = 256;
 const PHASH_INPUT_SIZE = 32;
@@ -6,22 +7,6 @@ const PHASH_INPUT_SIZE = 32;
 // ---------------------------------------------------------------------------
 // Image loading helpers
 // ---------------------------------------------------------------------------
-
-async function fetchToBlob(url: string): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ type: 'fetchImage', url }, (response) => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message));
-        return;
-      }
-      if (!response.ok) {
-        reject(new Error(`Failed to fetch image: ${response.error}`));
-        return;
-      }
-      resolve(new Blob([new Uint8Array(response.data as number[])], { type: response.mimeType as string }));
-    });
-  });
-}
 
 async function blobToImageData(blob: Blob, width: number, height: number): Promise<ImageData> {
   const blobUrl = URL.createObjectURL(blob);

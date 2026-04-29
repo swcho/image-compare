@@ -1,6 +1,11 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, lazy, Suspense } from 'react';
 import { useImageStore } from '../../store/imageStore';
+import { ExifPanel } from '../Common/ExifPanel';
 import { useTranslation } from '../../i18n';
+
+const ErpViewer = lazy(() =>
+  import('../ErpViewer/ErpViewer').then((m) => ({ default: m.ErpViewer })),
+);
 
 export function Carousel() {
   const images = useImageStore((s) => s.images);
@@ -12,6 +17,8 @@ export function Carousel() {
   const { t } = useTranslation();
 
   const thumbRef = useRef<HTMLDivElement>(null);
+  const [showExif, setShowExif] = useState(false);
+  const [showErpViewer, setShowErpViewer] = useState(false);
   const current = images[currentIndex];
 
   // Scroll active thumbnail into view
@@ -55,6 +62,26 @@ export function Carousel() {
             <span className="text-gray-500">{current.filename}</span>
           </span>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowErpViewer((v) => !v)}
+              className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+                showErpViewer
+                  ? 'bg-purple-600 border-purple-500 text-white'
+                  : 'border-purple-500 text-purple-300 hover:bg-purple-600 hover:text-white'
+              }`}
+            >
+              {showErpViewer ? t.erp.toggleHide : t.erp.toggleShow}
+            </button>
+            <button
+              onClick={() => setShowExif((v) => !v)}
+              className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+                showExif
+                  ? 'bg-blue-600 border-blue-500 text-white'
+                  : 'border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200'
+              }`}
+            >
+              {showExif ? t.exif.toggleHide : t.exif.toggleShow}
+            </button>
             <button
               onClick={toggleCompareMode}
               className={`text-xs px-3 py-1 rounded-full border transition-colors ${
@@ -124,7 +151,11 @@ export function Carousel() {
         </div>
 
         {/* Main image */}
-        <div className="relative flex items-center justify-center bg-[#12121c] min-h-[360px] max-h-[60vh]">
+        <div
+          className={`relative flex items-center justify-center bg-[#12121c] ${
+            showErpViewer ? 'h-[60vh]' : 'min-h-[360px] max-h-[60vh]'
+          }`}
+        >
           {/* Prev arrow */}
           <button
             onClick={prev}
@@ -137,13 +168,25 @@ export function Carousel() {
             ‹
           </button>
 
-          <img
-            key={current.src}
-            src={current.src}
-            alt={current.alt}
-            className="max-h-[58vh] max-w-full object-contain select-none animate-fadeIn"
-            draggable={false}
-          />
+          {showErpViewer ? (
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center text-gray-400 text-sm">
+                  {t.erp.loading}
+                </div>
+              }
+            >
+              <ErpViewer key={current.src} src={current.src} />
+            </Suspense>
+          ) : (
+            <img
+              key={current.src}
+              src={current.src}
+              alt={current.alt}
+              className="max-h-[58vh] max-w-full object-contain select-none animate-fadeIn"
+              draggable={false}
+            />
+          )}
 
           {/* Next arrow */}
           <button
@@ -157,6 +200,13 @@ export function Carousel() {
             ›
           </button>
         </div>
+
+        {/* EXIF panel */}
+        {showExif && (
+          <div className="px-4 py-2 border-t border-gray-800 bg-[#0e0e1a]">
+            <ExifPanel key={current.src} src={current.src} />
+          </div>
+        )}
 
         {/* Footer */}
         <div className="px-4 py-2 text-center text-xs text-gray-600 border-t border-gray-800">
