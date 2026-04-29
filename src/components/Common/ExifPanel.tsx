@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   formatDate,
   formatExposureTime,
@@ -13,29 +14,39 @@ interface ExifPanelProps {
   compact?: boolean;
 }
 
+const COMPACT_MIN_HEIGHT = 'min-h-[140px]';
+const FULL_MIN_HEIGHT = 'min-h-[180px]';
+
 export function ExifPanel({ src, compact = false }: ExifPanelProps) {
   const { info, loading, error } = useExif(src);
   const { t } = useTranslation();
 
+  const minHeight = compact ? COMPACT_MIN_HEIGHT : FULL_MIN_HEIGHT;
+  const wrapperClass = `text-[11px] px-2 py-1.5 bg-[#0e0e1a] rounded ${minHeight}`;
+
   if (loading) {
-    return <div className="text-[11px] text-gray-500 px-2 py-1.5">{t.exif.loading}</div>;
+    return (
+      <div className={wrapperClass}>
+        <ExifSkeleton compact={compact} />
+      </div>
+    );
   }
   if (error) {
-    return <div className="text-[11px] text-red-400 px-2 py-1.5">{error}</div>;
-  }
-  if (!info) {
-    return <div className="text-[11px] text-gray-500 px-2 py-1.5">{t.exif.empty}</div>;
+    return (
+      <div className={`${wrapperClass} flex items-center text-red-400`}>{error}</div>
+    );
   }
 
-  const rows = buildRows(info, t);
-
+  const rows = info ? buildRows(info, t) : [];
   if (rows.length === 0) {
-    return <div className="text-[11px] text-gray-500 px-2 py-1.5">{t.exif.empty}</div>;
+    return (
+      <div className={`${wrapperClass} flex items-center text-gray-500`}>{t.exif.empty}</div>
+    );
   }
 
   return (
     <div
-      className={`grid ${compact ? 'grid-cols-1 gap-y-0.5' : 'grid-cols-[auto_1fr] gap-x-3 gap-y-1'} text-[11px] px-2 py-1.5 bg-[#0e0e1a] rounded`}
+      className={`grid ${compact ? 'grid-cols-1 gap-y-0.5' : 'grid-cols-[auto_1fr] gap-x-3 gap-y-1'} ${wrapperClass}`}
     >
       {rows.map(({ label, value }) => (
         <div
@@ -51,6 +62,43 @@ export function ExifPanel({ src, compact = false }: ExifPanelProps) {
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Skeleton — sized to match a typical 6-8 row EXIF panel so there is no
+// layout shift when the real data arrives.
+// ---------------------------------------------------------------------------
+
+const COMPACT_VALUE_WIDTHS = ['w-24', 'w-36', 'w-20', 'w-32', 'w-28', 'w-40'];
+const FULL_VALUE_WIDTHS = ['w-32', 'w-48', 'w-28', 'w-40', 'w-44', 'w-36', 'w-52', 'w-32'];
+
+function ExifSkeleton({ compact }: { compact: boolean }) {
+  if (compact) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        {COMPACT_VALUE_WIDTHS.map((valueWidth, i) => (
+          <div key={i} className="flex justify-between items-center gap-3">
+            <div className="h-2.5 w-16 bg-gray-700/60 rounded animate-pulse" />
+            <div className={`h-2.5 ${valueWidth} bg-gray-700/60 rounded animate-pulse`} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
+      {FULL_VALUE_WIDTHS.map((valueWidth, i) => (
+        <Fragment key={i}>
+          <div className="h-3 w-20 bg-gray-700/60 rounded animate-pulse" />
+          <div className={`h-3 ${valueWidth} bg-gray-700/60 rounded animate-pulse`} />
+        </Fragment>
+      ))}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Row builder
+// ---------------------------------------------------------------------------
 
 interface Row {
   label: string;

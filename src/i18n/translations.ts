@@ -45,10 +45,6 @@ export const translations = {
       low: '● Low',
     },
     exif: {
-      toggleShow: 'EXIF',
-      toggleHide: 'Hide EXIF',
-      loading: 'Reading EXIF…',
-      error: 'Failed to read EXIF',
       empty: 'No EXIF metadata',
       title: 'Image Metadata',
       dimensions: 'Dimensions',
@@ -120,10 +116,6 @@ export const translations = {
       low: '● 낮음',
     },
     exif: {
-      toggleShow: 'EXIF',
-      toggleHide: 'EXIF 숨기기',
-      loading: 'EXIF 읽는 중…',
-      error: 'EXIF 읽기 실패',
       empty: 'EXIF 메타데이터 없음',
       title: '이미지 메타데이터',
       dimensions: '크기',

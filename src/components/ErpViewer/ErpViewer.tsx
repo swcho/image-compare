@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Viewer } from '@photo-sphere-viewer/core';
+import { AutorotatePlugin } from '@photo-sphere-viewer/autorotate-plugin';
 import { fetchToBlob } from '../../utils/fetchImage';
 import { useTranslation } from '../../i18n';
 
@@ -31,12 +32,30 @@ export function ErpViewer({ src }: ErpViewerProps) {
           container,
           panorama: blobUrl,
           loadingTxt: t.erp.loading,
-          navbar: ['zoom', 'move', 'fullscreen'],
+          navbar: ['autorotate', 'zoom', 'move', 'fullscreen'],
           defaultZoomLvl: 0,
           touchmoveTwoFingers: false,
           mousewheelCtrlKey: false,
           keyboard: 'always',
+          plugins: [
+            [
+              AutorotatePlugin,
+              {
+                autostartOnIdle: false,
+                autorotateSpeed: '0.1rps',
+              },
+            ],
+          ],
         });
+
+        viewer.addEventListener(
+          'ready',
+          () => {
+            const plugin = viewer?.getPlugin<AutorotatePlugin>(AutorotatePlugin);
+            plugin?.start();
+          },
+          { once: true },
+        );
       })
       .catch((e: unknown) => {
         if (cancelled) return;

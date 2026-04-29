@@ -17,7 +17,6 @@ export function Carousel() {
   const { t } = useTranslation();
 
   const thumbRef = useRef<HTMLDivElement>(null);
-  const [showExif, setShowExif] = useState(false);
   const [showErpViewer, setShowErpViewer] = useState(false);
   const current = images[currentIndex];
 
@@ -52,7 +51,7 @@ export function Carousel() {
       {/* Panel */}
       <div
         id="gh-img-compare-panel"
-        className="w-full max-w-5xl bg-[#1e1e2e] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-slideDown"
+        className="w-full max-w-6xl bg-[#1e1e2e] rounded-xl shadow-2xl flex flex-col overflow-hidden animate-slideDown"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -71,16 +70,6 @@ export function Carousel() {
               }`}
             >
               {showErpViewer ? t.erp.toggleHide : t.erp.toggleShow}
-            </button>
-            <button
-              onClick={() => setShowExif((v) => !v)}
-              className={`text-xs px-3 py-1 rounded-full border transition-colors ${
-                showExif
-                  ? 'bg-blue-600 border-blue-500 text-white'
-                  : 'border-gray-600 text-gray-400 hover:border-gray-400 hover:text-gray-200'
-              }`}
-            >
-              {showExif ? t.exif.toggleHide : t.exif.toggleShow}
             </button>
             <button
               onClick={toggleCompareMode}
@@ -202,11 +191,9 @@ export function Carousel() {
         </div>
 
         {/* EXIF panel */}
-        {showExif && (
-          <div className="px-4 py-2 border-t border-gray-800 bg-[#0e0e1a]">
-            <ExifPanel key={current.src} src={current.src} />
-          </div>
-        )}
+        <div className="px-4 py-2 border-t border-gray-800 bg-[#0e0e1a]">
+          <ExifPanel key={current.src} src={current.src} />
+        </div>
 
         {/* Footer */}
         <div className="px-4 py-2 text-center text-xs text-gray-600 border-t border-gray-800">
