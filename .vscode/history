@@ -8,3 +8,5 @@ git push -u origin main
 : 1776325932:0;npm run package
 : 1777433757:0;claude
 : 1777434271:0;npm run dev
+: 1777437423:0;npm run package
+: 1781672149:0;npm run dev

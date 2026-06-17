@@ -18,7 +18,7 @@ export const translations = {
       select: 'Select',
       prev: 'Previous',
       next: 'Next',
-      keyboardHint: '← → to navigate · ESC to close',
+      keyboardHint: '← → to navigate · ESC to close · scroll / pinch to zoom · double-click to reset',
       selectTwoImages: '· Select 2 images from thumbnails to compare',
     },
     comparator: {
@@ -89,7 +89,7 @@ export const translations = {
       select: '선택',
       prev: '이전',
       next: '다음',
-      keyboardHint: '← → 키로 탐색 · ESC 로 닫기',
+      keyboardHint: '← → 키로 탐색 · ESC 로 닫기 · 휠/핀치로 확대·축소 · 더블클릭으로 초기화',
       selectTwoImages: '· 비교할 이미지 2개를 썸네일에서 선택하세요',
     },
     comparator: {

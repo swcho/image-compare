@@ -3,6 +3,7 @@ import { useImageStore } from '../../store/imageStore';
 import { computeMetrics, computeDiffHeatmap } from '../../utils/imageMetrics';
 import { MetricsPanel } from './MetricsPanel';
 import { ExifPanel } from '../Common/ExifPanel';
+import { ZoomableImage, IDENTITY, type Transform } from '../Common/ZoomableImage';
 import { useTranslation } from '../../i18n';
 import type { ImageMetrics } from '../../types';
 
@@ -22,6 +23,9 @@ export function Comparator() {
   const [heatmapUrl, setHeatmapUrl] = useState<string | null>(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
 
+  // Shared zoom/pan transform so both panes move together.
+  const [transform, setTransform] = useState<Transform>(IDENTITY);
+
   const imgA = images[selectedIndices[0]];
   const imgB = images[selectedIndices[1]];
 
@@ -34,6 +38,7 @@ export function Comparator() {
     setHeatmapUrl(null);
     setHeatmapState('idle');
     setShowHeatmap(false);
+    setTransform(IDENTITY);
     setMetricsLoading(true);
 
     computeMetrics(imgA.src, imgB.src)
@@ -95,8 +100,18 @@ export function Comparator() {
 
         {/* Image panes */}
         <div className="grid grid-cols-2 divide-x divide-gray-800 bg-[#12121c]">
-          <ImagePane label="A" img={imgA} />
-          <ImagePane label="B" img={imgB} />
+          <ImagePane
+            label="A"
+            img={imgA}
+            transform={transform}
+            onTransformChange={setTransform}
+          />
+          <ImagePane
+            label="B"
+            img={imgB}
+            transform={transform}
+            onTransformChange={setTransform}
+          />
         </div>
 
         {/* Diff heatmap (shown below images when active) */}
@@ -148,9 +163,11 @@ export function Comparator() {
 interface ImagePaneProps {
   label: string;
   img: { src: string; alt: string; filename: string };
+  transform: Transform;
+  onTransformChange: (updater: (prev: Transform) => Transform) => void;
 }
 
-function ImagePane({ label, img }: ImagePaneProps) {
+function ImagePane({ label, img, transform, onTransformChange }: ImagePaneProps) {
   return (
     <div className="flex flex-col items-stretch gap-2 p-4 min-h-[260px]">
       <div className="flex items-center gap-2 min-w-0">
@@ -159,11 +176,13 @@ function ImagePane({ label, img }: ImagePaneProps) {
         </span>
         <span className="text-xs text-gray-500 truncate">{img.filename}</span>
       </div>
-      <img
+      <ZoomableImage
         src={img.src}
         alt={img.alt}
-        className="max-h-[300px] max-w-full object-contain flex-1 self-center"
-        draggable={false}
+        className="flex-1 self-stretch flex items-center justify-center min-h-[300px]"
+        imgClassName="max-h-[300px] max-w-full object-contain"
+        transform={transform}
+        onTransformChange={onTransformChange}
       />
       <ExifPanel src={img.src} compact />
     </div>

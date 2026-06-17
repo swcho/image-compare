@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, lazy, Suspense } from 'react';
 import { useImageStore } from '../../store/imageStore';
 import { ExifPanel } from '../Common/ExifPanel';
+import { ZoomableImage } from '../Common/ZoomableImage';
 import { useTranslation } from '../../i18n';
 
 const ErpViewer = lazy(() =>
@@ -168,12 +169,12 @@ export function Carousel() {
               <ErpViewer key={current.src} src={current.src} />
             </Suspense>
           ) : (
-            <img
+            <ZoomableImage
               key={current.src}
               src={current.src}
               alt={current.alt}
-              className="max-h-[58vh] max-w-full object-contain select-none animate-fadeIn"
-              draggable={false}
+              className="w-full h-full flex items-center justify-center animate-fadeIn"
+              imgClassName="max-h-[58vh] max-w-full object-contain"
             />
           )}
 
