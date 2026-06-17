@@ -10,3 +10,6 @@ git push -u origin main
 : 1777434271:0;npm run dev
 : 1777437423:0;npm run package
 : 1781672149:0;npm run dev
+: 1781674561:0;npm run package
+: 1781674742:0;npm i
+: 1781674754:0;npm run package
